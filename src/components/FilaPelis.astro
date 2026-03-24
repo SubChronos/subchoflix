@@ -5,41 +5,47 @@ interface Props {
   id:string,
   title:string,
   url:string,
-  params?:string
+  params?:string,
+  outOfScreen?:boolean
 }
-const { id, title, url, params = "" } = Astro.props
+const { id, title, url, params = "", outOfScreen = false} = Astro.props
 
 // Recupera pelis
 const pelis = await getMovies(url, params, 1);
 ---
 
-<section class="flex flex-col relative" id={id}>
+<section class={`flex flex-col relative ${outOfScreen ? "[content-visibility:auto]" : ""}`} id={id}>
     <h1 class="font-semibold text-3xl py-2 z-10 ml-10">{title}</h1>
-    <div class="flex flex-nowrap gap-2 overflow-hidden group snap-x snap-mandatory scroll-pl-10 movieRow">
+    <div class={`movieRow flex flex-nowrap gap-2 overflow-hidden group snap-x snap-mandatory scroll-pl-10`}>
 
       <div class="pl-10 snap-start"/>
       {
         pelis.results.map(peli => {
           return ( 
-            <a href={`/movie/${peli.id}?from=${id}`} class="contents" data-astro-prefetch="hover">
+            <a href={`/movie/${peli.id}?from=${id}`} class="contents">
               <img 
                 draggable="false"
                 src={`https://image.tmdb.org/t/p/w500/${peli.poster_path}`} 
-                class="snap-start mt-5 saturate-100 hover:saturate-150 hover:-translate-y-5 transition-all w-[calc((100%-4rem)/3)] sm:w-[calc((100%-4rem)/4)] md:w-[calc((100%-4rem)/5)] lg:w-[calc((100%-6rem)/7)] xl:w-[calc((100%-8rem)/8)] h-auto object-cover rounded-xl" alt={peli.title} 
+                class="snap-start mt-5 saturate-100 hover:saturate-150 hover:-translate-y-5 transition-all 
+                  w-[calc((100%-4rem)/3)] 
+                  sm:w-[calc((100%-4rem)/4)] 
+                  md:w-[calc((100%-4rem)/5)] 
+                  lg:w-[calc((100%-6rem)/7)] 
+                  xl:w-[calc((100%-8rem)/8)] 
+                  h-auto object-cover rounded-xl" alt={peli.title} 
                 transition:name={`movie-${peli.id}-row-${id}`}
                 loading="lazy"
-              
               />
             </a> )
         })
       }
       <div class="mr-1000"/>
 
-      <div class="scrollButtonR z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 right-0 absolute bg-linear-to-l from-zinc-900/70 to-zinc-900/20 hover:from-zinc-900/90 hover:to-zinc-900/40 overflow-hidden" transition:name={`fade-Lrow-${id}`}>
+      <div class="scrollButtonR z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 right-0 absolute bg-linear-to-l from-zinc-900/80 to-zinc-900/0 hover:from-zinc-900 overflow-hidden" transition:name={`fade-Lrow-${id}`}>
         <svg class="opacity-80 md:opacity-0 group-hover:opacity-80 -translate-x-5 group-hover:translate-x-0 transition-all ml-3 w-20 h-20 my-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9.707 5.293l6 6a1 1 0 0 1 0 1.414l-6 6a1 1 0 1 1 -1.414 -1.414l5.293 -5.293l-5.293 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
       </div>
-
-      <div class="scrollButtonL z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 left-0 absolute bg-linear-to-r from-zinc-900/70 to-zinc-900/20 hover:from-zinc-900/90 hover:to-zinc-900/40 overflow-hidden" transition:name={`fade-Rrow-${id}`}>
+  
+      <div class="scrollButtonL z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 left-0 absolute bg-linear-to-r from-zinc-900/80 to-zinc-900/0 hover:from-zinc-900 overflow-hidden" transition:name={`fade-Rrow-${id}`}>
         <svg class="scale-x-[-1] opacity-80 md:opacity-0 group-hover:opacity-80 translate-x-5 group-hover:translate-x-0 transition-all mr-3 w-20 h-20 my-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9.707 5.293l6 6a1 1 0 0 1 0 1.414l-6 6a1 1 0 1 1 -1.414 -1.414l5.293 -5.293l-5.293 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
       </div>
     </div>

@@ -4,15 +4,17 @@ import FilaPelis from '@/components/FilaPelis.astro';
 ---
 
 <Layout title="SubchoFlix">
-  <main class="flex flex-col gap-20">
+  <main class="flex flex-col gap-20 mt-10">
     <FilaPelis id="popular" title="Popular" url="movie/popular" />
     <FilaPelis id="trending_day" title="Tendencia de Hoy" url="trending/movie/day" />
     <FilaPelis id="now_playing" title="En cines" url="movie/now_playing" />
-    <FilaPelis id="top_rated" title="Mejor valoradas" url="movie/top_rated" />
-    <FilaPelis id="cartoon" title="Dibujos animados" url="discover/movie" params="&sort_by=popularity.desc&with_genres=16" />
-    <FilaPelis id="discover" title="Descubrimiento" url="discover/movie" />
-    <FilaPelis id="thriller" title="Thriller" url="discover/movie" params="&sort_by=popularity.desc&with_genres=53" />
-    <FilaPelis id="trending_week" title="Tendencia Semanal" url="trending/movie/week" />
-    <FilaPelis id="upcoming" title="Proximamente" url="movie/upcoming" />
+    <FilaPelis outOfScreen id="top_rated" title="Mejor valoradas" url="movie/top_rated" />
+    <FilaPelis outOfScreen id="cartoon" title="Dibujos animados" url="discover/movie" params="&sort_by=popularity.desc&with_genres=16" />
+    <FilaPelis outOfScreen id="discover" title="Descubrimiento" url="discover/movie" />
+    <FilaPelis outOfScreen id="thriller" title="Thriller" url="discover/movie" params="&sort_by=popularity.desc&with_genres=53" />
+    <FilaPelis outOfScreen id="trending_week" title="Tendencia Semanal" url="trending/movie/week" />
+    <FilaPelis outOfScreen id="upcoming" title="Proximamente" url="movie/upcoming" />
+    
+    <FilaPelis outOfScreen id="zoo" title="Zootopia" url="search/movie" params="&query=Sup" />
   </main>
 </Layout>
