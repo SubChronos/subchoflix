@@ -5,9 +5,6 @@ import { getMovieDetails } from "@/lib/api";
 //Saca desde que fila a clicado
 const rowFrom = Astro.url.searchParams.get('from') || 'popular';
 
-interface Params {
-  id:string
-}
 const { id } = Astro.params
 
 // Recupera pelis
@@ -19,7 +16,7 @@ if (id) {
 
 <Layout title="SubchoFlix">
   <main class="flex flex-row justify-center h-screen">
-    <img src={`https://image.tmdb.org/t/p/original/${details?.poster_path}`} class="w-2/7 my-auto" transition:name={`movie-${id}-row-${rowFrom}`}/>
+    <img src={`https://image.tmdb.org/t/p/w500/${details?.poster_path}`} class="w-2/7 my-auto" transition:name={`movie-${id}-row-${rowFrom}`}/>
     <section class="flex flex-col">
       <h1>{details?.title}</h1>
       <p>{details?.overview}</p>

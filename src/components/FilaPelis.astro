@@ -1,13 +1,16 @@
 ---
-import type { MovieResponse } from "@/lib/types"
+import { getMovies } from "@/lib/api"
 
 interface Props {
   id:string,
   title:string,
-  pelis:MovieResponse
+  url:string,
+  params?:string
 }
+const { id, title, url, params = "" } = Astro.props
 
-const { id, title, pelis } = Astro.props
+// Recupera pelis
+const pelis = await getMovies(url, params, 1);
 ---
 
 <section class="flex flex-col relative" id={id}>
@@ -18,13 +21,14 @@ const { id, title, pelis } = Astro.props
       {
         pelis.results.map(peli => {
           return ( 
-            <a href={`/movie/${peli.id}?from=${id}`} class="contents">
+            <a href={`/movie/${peli.id}?from=${id}`} class="contents" data-astro-prefetch="hover">
               <img 
                 draggable="false"
                 src={`https://image.tmdb.org/t/p/w500/${peli.poster_path}`} 
                 class="snap-start mt-5 saturate-100 hover:saturate-150 hover:-translate-y-5 transition-all w-[calc((100%-4rem)/3)] sm:w-[calc((100%-4rem)/4)] md:w-[calc((100%-4rem)/5)] lg:w-[calc((100%-6rem)/7)] xl:w-[calc((100%-8rem)/8)] h-auto object-cover rounded-xl" alt={peli.title} 
                 transition:name={`movie-${peli.id}-row-${id}`}
                 loading="lazy"
+              
               />
             </a> )
         })

@@ -1,45 +1,18 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import CargarFila from '@/components/CargarFila.astro';
-import LoadingFila from '@/components/LoadingFila.astro';
+import FilaPelis from '@/components/FilaPelis.astro';
 ---
 
 <Layout title="SubchoFlix">
   <main class="flex flex-col gap-20">
-    <CargarFila id="popular" title="Popular" url="movie/popular"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="trending_day" title="Tendencia de Hoy" url="trending/movie/day"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="now_playing" title="En cines" url="movie/now_playing"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="top_rated" title="Mejor valoradas" url="movie/top_rated"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="cartoon" title="Dibujos animados" url="discover/movie" params="&sort_by=popularity.desc&with_genres=16"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="discover" title="Descubrimiento" url="discover/movie"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="thriller" title="Thriller" url="discover/movie" params="&sort_by=popularity.desc&with_genres=53"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="trending_week" title="Tendencia Semanal" url="trending/movie/week"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
-
-    <CargarFila id="upcoming" title="Proximamente" url="movie/upcoming"> 
-      <LoadingFila slot="fallback"/>
-    </CargarFila>
+    <FilaPelis id="popular" title="Popular" url="movie/popular" />
+    <FilaPelis id="trending_day" title="Tendencia de Hoy" url="trending/movie/day" />
+    <FilaPelis id="now_playing" title="En cines" url="movie/now_playing" />
+    <FilaPelis id="top_rated" title="Mejor valoradas" url="movie/top_rated" />
+    <FilaPelis id="cartoon" title="Dibujos animados" url="discover/movie" params="&sort_by=popularity.desc&with_genres=16" />
+    <FilaPelis id="discover" title="Descubrimiento" url="discover/movie" />
+    <FilaPelis id="thriller" title="Thriller" url="discover/movie" params="&sort_by=popularity.desc&with_genres=53" />
+    <FilaPelis id="trending_week" title="Tendencia Semanal" url="trending/movie/week" />
+    <FilaPelis id="upcoming" title="Proximamente" url="movie/upcoming" />
   </main>
 </Layout>
