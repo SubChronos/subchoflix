@@ -6,7 +6,7 @@ import CargarFila from '@/components/CargarFila.astro';
 <Layout title="SubchoFlix">
   <main class="flex flex-col gap-20">
     <CargarFila server:defer id="popular" title="Popular" url="movie/popular" />
-    <CargarFila server:defer id="tranding_day" title="Tendencia de Hoy" url="trending/movie/day" />
+    <CargarFila server:defer id="trending_day" title="Tendencia de Hoy" url="trending/movie/day" />
     <CargarFila server:defer id="now_playing" title="En cines" url="movie/now_playing" />
     <CargarFila server:defer id="top_rated" title="Mejor valoradas" url="movie/top_rated" />
     <CargarFila server:defer id="cartoon" title="Dibujos animados" url="discover/movie" params="&sort_by=popularity.desc&with_genres=16" />

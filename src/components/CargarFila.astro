@@ -7,10 +7,9 @@ interface Props {
   id:string,
   title:string,
   url:string,
-  params:string,
+  params?:string
 }
-
-const { id, title, url, params} = Astro.props
+const { id, title, url, params = ""} = Astro.props
 
 // Recupera pelis
 const pelis = await getMovies(url, params, 1);
