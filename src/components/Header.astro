@@ -25,16 +25,18 @@
 </header>
 
 <script>
-    const searchBar = document.getElementById("searchBar") as HTMLInputElement
-    const searchButton = document.getElementById("searchButton") as HTMLButtonElement
-    searchButton.addEventListener("mousedown", (event) => { // Bloqueamos el evento mouse down para que no quite el focus al input
-        event.preventDefault();
+    document.addEventListener('astro:page-load', () => {
+        const searchBar = document.getElementById("searchBar") as HTMLInputElement
+        const searchButton = document.getElementById("searchButton") as HTMLButtonElement
+        searchButton.addEventListener("mousedown", (event) => { // Bloqueamos el evento mouse down para que no quite el focus al input
+            event.preventDefault();
+        })
+        searchButton.addEventListener('click', () => { // Evento para la busqueda
+            const url = new URL (window.location.href);
+            url.pathname = "/buscar";
+            
+            url.searchParams.set("query", searchBar.value);
+            window.location.href = url.toString()
+        });
     })
-    searchButton.addEventListener('click', () => { // Evento para la busqueda
-        const url = new URL (window.location.href);
-        url.pathname = "/buscar";
-        
-        url.searchParams.set("query", searchBar.value);
-        window.location.href = url.toString()
-    });
 </script>

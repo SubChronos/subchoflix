@@ -1,12 +1,35 @@
 ---
 import Layout from "@/layouts/Layout.astro"
+import PeliCard from "@/components/PeliCard.astro"
+import { getMovies } from "@/lib/api"
 
+const query = Astro.url.searchParams.get('query') || '';
+const queryParam = "&query=" + query
 
+const capitalize = (text:string) => {
+  return text
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 
+const pelis = await getMovies("search/movie", queryParam, 1);
+console.log(pelis)
 ---
 
-<Layout title="Buscando">
-    <main>
-
+<Layout title={`Buscando - ${capitalize(query)}`}>
+    <main class="w-full mt-10">
+        <h1 class="font-semibold text-3xl py-2 z-10 ml-10">Mostrando resultados para: "{capitalize(query)}"</h1>
+        <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-10 px-10 pb-10">
+            {
+                (pelis.total_results) ?
+                    pelis.results.map(peli => {
+                        return (<PeliCard peli={peli} id="buscar"/>)
+                    })
+                    :
+                    <h2 class="col-span-full text-2xl text-zinc-300 italic mt-4 ml-4">No se han encontrado resultados...</h2>
+            }
+        </section>
     </main>
 </Layout>

@@ -1,0 +1,20 @@
+---
+import type { Movie } from "@/lib/types"
+
+interface Props {
+  peli: Movie,
+  id: string
+}
+const { peli, id } = Astro.props
+---
+
+<a href={`/movie/${peli.id}?from=${id}`} class="contents">
+  <img 
+    draggable="false"
+    src={`https://image.tmdb.org/t/p/w500/${peli.poster_path}`} 
+    class="snap-start mt-5 saturate-100 hover:saturate-150 hover:-translate-y-5 transition-all 
+      h-auto object-cover rounded-xl" alt={peli.title} 
+    transition:name={`movie-${peli.id}-row-${id}`}
+    loading="lazy"
+  />
+</a>
