@@ -9,26 +9,61 @@ const options = {
   }
 };
 
+//Inicia variable apiCache
+const apiCache = new Map();
+const CACHE_TTL = 1000 * 60 * 60; //TTL
+
 // FETCH API
 export async function getMovies(url: string, params: string = "", page: number = 1): Promise<MovieResponse> {
+  const cacheKey = `${url}-${params}-${page}`;
+  // Si la consulta esta en cache Y NO HA CADUCADO, la devuelve directamente
+  const cachedItem = apiCache.get(cacheKey);
+  if (cachedItem && (Date.now() - cachedItem.timestamp < CACHE_TTL)) {
+    return cachedItem.data;
+  }
+
+  // Si no esta en cache la solicita
   const response = await fetch(`https://api.themoviedb.org/3/${url}?language=es-ES${params}&page=${page}`, options);
   
   if (!response.ok) {
     throw new Error('Error al cargar las películas');
   }
   
-  return await response.json();
+  const data = await response.json();
+
+  // Guarda en cache la consulta
+  apiCache.set(cacheKey, {
+    data: data,
+    timestamp: Date.now()
+  });
+
+  return data
 }
 
 // DETALLE PELICULA
-export async function getMovieDetails(peli: string): Promise<MovieDetails> {
-  const response = await fetch(`https://api.themoviedb.org/3/movie/${peli}?language=es-ES`, options);
+export async function getMovieDetails(id: string): Promise<MovieDetails> {
+  // Cache
+  const cacheKey = `details-${id}`;
+  const cachedItem = apiCache.get(cacheKey);
+  if (cachedItem && (Date.now() - cachedItem.timestamp < CACHE_TTL)) {
+    return cachedItem.data;
+  }
+
+  const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=es-ES`, options);
   
   if (!response.ok) {
     throw new Error('Error al cargar las películas');
   }
   
-  return await response.json();
+  const data = await response.json();
+
+  // Guarda en cache la consulta
+  apiCache.set(cacheKey, {
+    data: data,
+    timestamp: Date.now()
+  });
+
+  return data
 }
 
 
