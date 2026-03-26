@@ -39,45 +39,15 @@ const pelis = await getMovies(url, params, 1);
             </a> )
         })
       }
-      <div class="mr-1000"/>
+      <div class="rightMargin mr-1000"/>
 
-      <div class="scrollButtonR z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 right-0 absolute bg-linear-to-l from-zinc-900/80 to-zinc-900/0 hover:from-zinc-900 overflow-hidden" transition:name={`fade-Lrow-${id}`}>
-        <svg class="opacity-80 md:opacity-0 group-hover:opacity-80 -translate-x-5 group-hover:translate-x-0 transition-all ml-3 w-20 h-20 my-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9.707 5.293l6 6a1 1 0 0 1 0 1.414l-6 6a1 1 0 1 1 -1.414 -1.414l5.293 -5.293l-5.293 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
+      <div class="z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 right-0 absolute bg-linear-to-l from-zinc-900/80 to-zinc-900/0 hover:from-zinc-900 overflow-hidden" transition:name={`fade-Lrow-${id}`}>
+        <svg class="scrollButtonR z-10 opacity-80 md:opacity-0 group-hover:opacity-80 -translate-x-5 md:-translate-x-15 group-hover:-translate-x-5 transition-all ml-3 w-20 h-20 my-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9.707 5.293l6 6a1 1 0 0 1 0 1.414l-6 6a1 1 0 1 1 -1.414 -1.414l5.293 -5.293l-5.293 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
       </div>
   
-      <div class="scrollButtonL z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 left-0 absolute bg-linear-to-r from-zinc-900/80 to-zinc-900/0 hover:from-zinc-900 overflow-hidden" transition:name={`fade-Rrow-${id}`}>
-        <svg class="scale-x-[-1] opacity-80 md:opacity-0 group-hover:opacity-80 translate-x-5 group-hover:translate-x-0 transition-all mr-3 w-20 h-20 my-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9.707 5.293l6 6a1 1 0 0 1 0 1.414l-6 6a1 1 0 1 1 -1.414 -1.414l5.293 -5.293l-5.293 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
+      <div class="z-5 cursor-pointer flex flex-col justify-center pt-17 w-10 lg:w-12 xl:w-18 h-full my-auto top-0 left-0 absolute bg-linear-to-r from-zinc-900/80 to-zinc-900/0 hover:from-zinc-900 overflow-hidden" transition:name={`fade-Rrow-${id}`}>
+        <svg class="scrollButtonL z-10 hidden scale-x-[-1] opacity-80 md:opacity-0 group-hover:opacity-80 -translate-x-8 md:translate-x-5 md:group-hover:-translate-x-5 transition-all mr-3 w-20 h-20 my-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9.707 5.293l6 6a1 1 0 0 1 0 1.414l-6 6a1 1 0 1 1 -1.414 -1.414l5.293 -5.293l-5.293 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
       </div>
     </div>
     
 </section>
-
-<script>
-  document.addEventListener('astro:page-load', () => {
-    const scrollButtonR = document.querySelectorAll(".scrollButtonR");
-    const scrollButtonL = document.querySelectorAll(".scrollButtonL");
-
-    scrollButtonR.forEach(button => {
-      button.addEventListener("click", (event) => {
-        scroll(event, 1)
-      })
-    })
-    scrollButtonL.forEach(button => {
-      button.addEventListener("click", (event) => {
-        scroll(event, -1)
-      })
-    })
-
-
-    function scroll(event: Event, direction: number) {
-      const botonPulsado = event.target as HTMLDivElement;
-      const seccion = botonPulsado.closest('.movieRow') as HTMLDivElement;
-      const anchoVisible = seccion.clientWidth * direction;
-
-      seccion.scrollBy({
-        left: anchoVisible,
-        behavior: "smooth"
-      });
-    }
-  });
-</script>

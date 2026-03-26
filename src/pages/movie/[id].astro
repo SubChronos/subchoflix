@@ -1,5 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import TrailerViewer from "@/components/TrailerViewer.astro";
 import { getMovieDetails, getMovieVideos } from "@/lib/api";
 
 //Saca desde que fila a clicado
@@ -14,26 +15,80 @@ if (id) {
   details = await getMovieDetails(id);
   videos = await getMovieVideos(id);
 }
-console.log(videos)
+const ratingPercentage = (details?.vote_average) ? details.vote_average * 100 / 10 : 0
+let statusES
+switch(details?.status) {
+  case "Rumored": statusES = "Rumoreada"; break;
+  case "Planned": statusES = "Planeada"; break;
+  case "In Production": statusES = "En producción"; break;
+  case "Post Production": statusES = "En posproducción"; break;
+  case "Released": statusES = "Estrenada"; break;
+  case "Canceled": statusES = "Cancelada"; break;
+  default: statusES = "Desconocido"; break;
+}
 const trailer = videos?.results.find((video) => video.type === "Trailer")
+let hasTrailer = true
+if (!trailer) {
+  hasTrailer = false
+}
 ---
 
-<Layout title="SubchoFlix">
-  <main class="flex flex-row justify-center w-full h-full overflow-hidden">
-    <div class="h-full w-1/3 shrink-0 relative" transition:name={`movie-${id}-row-${rowFrom}`}>
-      <img src={`https://image.tmdb.org/t/p/w500/${details?.poster_path}`} class="h-full w-full object-cover object-center block z-10"/>
-      <div class="absolute w-1/4 h-full top-0 right-0 pr-4 z-20 bg-linear-to-r from-zinc-900/0 to-zinc-900"/>
+<Layout title="SubchoFlix" disabledTrailerOverlay>
+  <main id="PAGINA-DE-PELICULA" class="flex flex-col md:flex-row justify-center w-full h-full md:overflow-hidden">
+    <div class="h-100 md:h-full w-full md:w-1/3 shrink-0 relative" transition:name={`movie-${id}-row-${rowFrom}`}>
+      <img src={`https://image.tmdb.org/t/p/w500/${details?.poster_path}`} draggable="false" alt={`Poster de ${details?.original_title}`} class="h-full w-full object-cover object-center block z-10"/>
+      <div class="absolute w-full md:w-1/4 h-1/4 md:h-full bottom-0 right-0 pr-6 z-20 bg-linear-to-b md:bg-linear-to-r from-zinc-900/0 to-zinc-900"/>
     </div>
-    <section class="flex flex-col w-2/3 pl-20">
-      <h1 class="text-8xl font-extrabold mb-10 text-balance">{details?.title}</h1>
-      <p class="max-w-180">{details?.overview}</p>
+    <section class="flex flex-col w-full pt-5 md:pt-0 md:w-2/3 px-10 xxl:pl-20">
+      <h1 class="text-4xl xs:text-6xl md:text-7xl xl:text-8xl font-extrabold mb-8 text-balance wrap-break-word">{details?.title}</h1>
+      <p class="my-3 max-w-150 xl:max-w-180">{details?.overview}</p>
       
-      <p>{details?.release_date}</p>
-      <p>{details?.vote_average}</p>
+      <section class="flex flex-col xl:flex-row mt-auto justify-between h-full">
+        <div class="flex flex-wrap gap-4 xl:flex-col xl:mt-auto w-full xl:w-1/3">
+          <p class="text-zinc-300/80 flex flex-row gap-1 my-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-progress"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 20.777a8.942 8.942 0 0 1 -2.48 -.969" /><path d="M14 3.223a9.003 9.003 0 0 1 0 17.554" /><path d="M4.579 17.093a8.961 8.961 0 0 1 -1.227 -2.592" /><path d="M3.124 10.5c.16 -.95 .468 -1.85 .9 -2.675l.169 -.305" /><path d="M6.907 4.579a8.954 8.954 0 0 1 3.093 -1.356" /></svg>
+            {statusES} -
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-event"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12" /><path d="M16 3l0 4" /><path d="M8 3l0 4" /><path d="M4 11l16 0" /><path d="M8 15h2v2h-2l0 -2" /></svg>
+            {details?.release_date}
+          </p>
+          <p class="text-zinc-300/80 flex flex-row gap-1 my-3 xl:ml-0 xl:my-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-report-money"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M14 11h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5" /><path d="M12 17v1m0 -8v1" /></svg>
+            {(details?.budget) ? details?.budget.toLocaleString('es-ES')+"$" : "???"} - 
 
-      <iframe width="560" height="315" src={`https://www.youtube.com/embed/${trailer?.key}?modestbranding=1`} title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-      
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-moneybag-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9.5 3h5a1.5 1.5 0 0 1 1.5 1.5a3.5 3.5 0 0 1 -3.5 3.5h-1a3.5 3.5 0 0 1 -3.5 -3.5a1.5 1.5 0 0 1 1.5 -1.5" /><path d="M12.5 21h-4.5a4 4 0 0 1 -4 -4v-1a8 8 0 0 1 14.935 -3.991" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+            {(details?.revenue) ? details?.revenue.toLocaleString('es-ES')+"$" : "???"}
+          </p>
+          <div class="inline-grid mb-10 w-full xl:w-fit">
+            <div class="flex flex-row col-start-1 row-start-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#444"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+            </div>
+            <div class="flex overflow-hidden col-start-1 row-start-1" style={`width:${ratingPercentage}%;`}>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 xs:w-8 xs:h-8 shrink-0" viewBox="0 0 24 24" fill="#ffcc00"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
+            </div>
+          </div>
+        </div>
+        <div class="pb-10 xl:pt-10 h-full w-full xl:w-2/3" id="video-datos" data-key={hasTrailer ? trailer?.key : "NOTFOUND"}>
+          <TrailerViewer trailer_key={trailer?.key} />
+        </div>
+      </section>
     </section>
   </main>
 </Layout>
-    

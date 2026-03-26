@@ -1,0 +1,55 @@
+---
+const { trailer_key = "" } = Astro.props
+---
+<iframe id="video-trailer" transition:name="video-trailer" transition:persist class="pointer-events-auto hidden w-full aspect-video md:aspect-auto md:h-full" src={`https://www.youtube.com/embed/${trailer_key}?modestbranding=1&enablejsapi=1`} title="Trailer youtube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<script is:inline src="https://www.youtube.com/iframe_api"></script>
+<script is:inline>
+  document.addEventListener('astro:page-load', () => {
+    const esPaginaDePelicula = document.getElementById("PAGINA-DE-PELICULA");
+    const iframe = document.getElementById("video-trailer");
+    const datosVideo = document.getElementById("video-datos");
+    if (!iframe) return; //Si no hay iframe sale para no dar errores
+
+    // Key del video del div separado (Para que no se pase con la transicion)
+    let videoKey;
+    if (datosVideo) {
+        videoKey = datosVideo.dataset.key;
+        if (videoKey == "NOTFOUND") {
+            iframe.style.display = "none"
+        } else {
+            iframe.style.display = "block"
+        }
+    }
+
+    function gestionarReproductor() {
+      if (window.miReproductorYT) {
+        // Cambiamos el video al nuevo
+        window.miReproductorYT.cueVideoById(videoKey);
+      } else {
+        // Si no existe el reproductor se crea uno nuevo
+        window.miReproductorYT = new window.YT.Player('video-trailer', {
+          events: {
+            'onStateChange': window.manejarEstadoDelVideo
+          }
+        });
+      }
+    }
+
+    // Funcion para manejar el video (API) global
+    window.manejarEstadoDelVideo = function(evento) {
+        iframe.dataset.status = evento.data;
+    };
+
+    // Revisa si la API esta disponible
+    if (window.YT && window.YT.Player) {
+      gestionarReproductor(); // Si esta lista
+    } else {
+      window.onYouTubeIframeAPIReady = gestionarReproductor; // Si no, esperamos
+    }
+
+    if (!esPaginaDePelicula && (iframe.dataset.status == "-1" || iframe.dataset.status == "5")) {
+        iframe.style.display = "none"
+    }
+  });
+</script>

@@ -4,7 +4,7 @@ import FilaPelis from '@/components/FilaPelis.astro';
 ---
 
 <Layout title="SubchoFlix">
-  <main class="flex flex-col gap-20 mt-10">
+  <main class="flex flex-col gap-20 my-10">
     <FilaPelis id="popular" title="Popular" url="movie/popular" />
     <FilaPelis id="trending_day" title="Tendencia de Hoy" url="trending/movie/day" />
     <FilaPelis id="now_playing" title="En cines" url="movie/now_playing" />
@@ -16,3 +16,61 @@ import FilaPelis from '@/components/FilaPelis.astro';
     <FilaPelis outOfScreen id="upcoming" title="Proximamente" url="movie/upcoming" />
   </main>
 </Layout>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const scrollButtonR = document.querySelectorAll(".scrollButtonR");
+    const scrollButtonL = document.querySelectorAll(".scrollButtonL");
+
+    scrollButtonR.forEach(button => {
+      button.addEventListener("click", (event) => {
+        scroll(event, 1)
+      })
+    })
+    scrollButtonL.forEach(button => {
+      button.addEventListener("click", (event) => {
+        scroll(event, -1)
+      })
+    })
+
+
+    function scroll(event: Event, direction: number) {
+      const botonPulsado = event.currentTarget as HTMLImageElement;
+      const seccion = botonPulsado.closest('.movieRow') as HTMLDivElement;
+      const anchoVisible = seccion.clientWidth * direction;
+      
+      seccion.scrollBy({
+        left: anchoVisible,
+        behavior: "smooth"
+      });
+
+      // Evento cuando finaliza el scroll
+      seccion.addEventListener('scrollend', (event) => {
+        const seccion = event.currentTarget as HTMLDivElement
+        
+        // Maneja el display de las flechas
+        const leftButton = seccion.querySelector(".scrollButtonL") as HTMLImageElement
+        
+        // Izquierda
+        if (seccion.scrollLeft > 0) {
+          leftButton.style.display = "block"
+        } else {
+          leftButton.style.display = "none"
+        }
+
+        // Derecha
+        const rightButton = seccion.querySelector(".scrollButtonR") as HTMLImageElement
+        const margenDerecho = seccion.querySelector(".rightMargin") as HTMLAnchorElement;
+        const posMargen = margenDerecho.offsetLeft
+        const anchoVisible = seccion.clientWidth
+        const scrollPos = seccion.scrollLeft
+
+        if (scrollPos > posMargen-anchoVisible) { //Si el scroll es mayor que el margen de la derecha oculta la flecha derecha
+          rightButton.style.display = "none"
+        } else {
+          rightButton.style.display = "block"
+        }
+      })
+    }
+  });
+</script>
