@@ -31,7 +31,7 @@ const { title, disabledTrailerOverlay = false } = Astro.props
         </main>
         {   
             disabledTrailerOverlay ? "" : 
-                <div class="pointer-events-none fixed bottom-0 right-0 w-1/2 md:w-1/3 aspect-video z-20">
+                <div class="pointer-events-none fixed bottom-0 right-0 w-full md:w-1/2 lg:w-1/3 aspect-video z-20">
                     <TrailerViewer />
                 </div>
         }

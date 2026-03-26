@@ -1,13 +1,20 @@
 ---
 const { trailer_key = "" } = Astro.props
 ---
-<iframe id="video-trailer" transition:name="video-trailer" transition:persist class="pointer-events-auto hidden w-full aspect-video md:aspect-auto md:h-full" src={`https://www.youtube.com/embed/${trailer_key}?modestbranding=1&enablejsapi=1`} title="Trailer youtube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div id="video-parent-parent" transition:name="video-trailer" transition:persist class="pointer-events-none hidden relative w-full h-full">
+  <iframe id="video-trailer"  data-status="-1" class="pointer-events-auto hidden absolute w-full aspect-video md:aspect-auto md:h-full" src={`https://www.youtube.com/embed/${trailer_key}?modestbranding=1&enablejsapi=1`} title="Trailer youtube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <button id="video-trailer-stop-button" class="bg-zinc-800 hover:bg-zinc-600 rounded-full absolute top-0 right-0 p-2 m-3 pointer-events-auto">
+    <svg class="text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+  </button>
+</div>
 
 <script is:inline src="https://www.youtube.com/iframe_api"></script>
 <script is:inline>
   document.addEventListener('astro:page-load', () => {
     const esPaginaDePelicula = document.getElementById("PAGINA-DE-PELICULA");
+    const stopButton = document.getElementById("video-trailer-stop-button");
     const iframe = document.getElementById("video-trailer");
+    const iframe_parent = document.getElementById("video-parent-parent");
     const datosVideo = document.getElementById("video-datos");
     if (!iframe) return; //Si no hay iframe sale para no dar errores
 
@@ -16,8 +23,10 @@ const { trailer_key = "" } = Astro.props
     if (datosVideo) {
         videoKey = datosVideo.dataset.key;
         if (videoKey == "NOTFOUND") {
+            iframe_parent.style.display = "none"
             iframe.style.display = "none"
         } else {
+            iframe_parent.style.display = "block"
             iframe.style.display = "block"
         }
     }
@@ -49,7 +58,20 @@ const { trailer_key = "" } = Astro.props
     }
 
     if (!esPaginaDePelicula && (iframe.dataset.status == "-1" || iframe.dataset.status == "5")) {
+        iframe_parent.style.display = "none"
         iframe.style.display = "none"
     }
+    
+    if (esPaginaDePelicula) {
+      stopButton.style.display = "none";
+    } else {
+      stopButton.style.display = "block";
+    }
+
+    stopButton.addEventListener('click', () => {
+        iframe_parent.style.display = "none";
+        iframe.style.display = "none";
+        window.miReproductorYT.cueVideoById("NOTFOUND")
+    })
   });
 </script>

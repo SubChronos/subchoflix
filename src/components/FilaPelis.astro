@@ -18,7 +18,7 @@ const pelis = await getMovies(url, params, 1);
     <h1 class="font-semibold text-3xl py-2 z-10 ml-10">{title}</h1>
     <div class={`movieRow flex flex-nowrap gap-2 overflow-hidden group snap-x snap-mandatory scroll-pl-10`}>
 
-      <div class="pl-10 snap-start"/>
+      <div class="pl-4 snap-start"/>
       {
         pelis.results.map(peli => {
           return ( 
